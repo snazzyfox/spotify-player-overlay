@@ -33,7 +33,7 @@ export async function initLogin() {
         code_challenge: codeChallenge,
         show_dialog: 'false',
     }).toString();
-    window.location.replace(loginUrl);
+    window.location.href = loginUrl;
 }
 
 async function getToken(params: {[key: string]: string}) {
