@@ -18,7 +18,7 @@
         </div>
     </div>
     {/each}
-    <img class="spotify-logo" src="/assets/spotify_logo.svg" alt="Spotify Logo"/>
+    <img class="spotify-logo" src="./assets/spotify_logo.svg" alt="Spotify Logo"/>
 </main>
 {/if}
 <!-- Nothing shows if nothing is playing -->
@@ -81,8 +81,6 @@ main {
 	border-radius: var(--background-radius);
 	height: calc(100vh - 2 * var(--main-margin));
 	width: calc(100vw - 2 * var(--main-margin));
-	max-height: 480px;
-	max-width: 1280px;
 }
 
 .nowplaying-container {
