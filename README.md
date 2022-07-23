@@ -23,7 +23,9 @@ This application has not yet been reviewed by Spotify and therefore cannot be us
 3. Save the source. Your source should now have a "Sign in to Spotify" button.
 4. Right click on the browser source and select "Interact"
 5. In the pop up window, log into Spotify and approve app access.
-6. Edit the Browser source again and change the source to your desired size. Width 600 and height 200 is a good starting point.
+6. Edit the Browser source again and change the source to your desired size. Width 600 and height 200 is a good starting point. 
+
+For best quality, the aspect ratio at 3:1 or higher, and avoid scaling the source up/down in OBS. Instead, change the size inside the browser source to have the player update the layout itself.
 
 ### Customizing the player
 

@@ -10,7 +10,7 @@
         <label>Spotify Client ID: 
             <input bind:value={$spotifyClientId} placeholder="0123456789abcdef0123456789abcdef"/>
         </label>
-        <div class="login-button" on:click={initLogin().catch(e => error = e)}>Sign In with Spotify</div>
+        <div class="login-button" on:click={login}>Sign In with Spotify</div>
     </div>
 
     {#if error}
@@ -34,6 +34,11 @@ onMount(async () => {
         error = err
     }
 })
+
+function login() {
+    initLogin().catch(e => error = e)
+}
+
 </script>
 
 <style lang="less">
