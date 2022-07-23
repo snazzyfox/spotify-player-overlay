@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Overpass+Mono&display=swap');
+body {
+    margin: 0;
+    padding: var(--main-margin);
+    overflow: hidden;
+}
+
+* {
+    font-family: var(--font-family);
+}
+
+:root {
+    --background-color: #191414cc; /* spotify black */
+    --background-shadow: #191414a0;
+    --background-radius: 5vh;  
+    --font-family: 'Montserrat', sans-serif;
+    --main-margin: 5vh;
+    --text-color: #ffffff;
+    --time-color: #bbbbbb;
+    --spotify-green: #1D8954;
+    --text-fade-width: 3vmin;
+}
