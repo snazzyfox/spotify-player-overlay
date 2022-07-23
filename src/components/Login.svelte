@@ -6,7 +6,12 @@
     </div>
     {/if}
 
-    <div class="login-button" on:click={initLogin}>Sign In with Spotify</div>
+    <div class="login-form">
+        <label>Spotify Client ID: 
+            <input bind:value={$spotifyClientId} placeholder="0123456789abcdef0123456789abcdef"/>
+        </label>
+        <div class="login-button" on:click={initLogin().catch(e => error = e)}>Sign In with Spotify</div>
+    </div>
 
     {#if error}
     <div class="info-box">
@@ -18,6 +23,7 @@
 <script lang="ts">
 import {onMount} from 'svelte';
 import {handleAuth, initLogin} from '../spotifyApi/auth'
+import {spotifyClientId} from '../stores'
 
 export let error: string | null = null;
 
@@ -28,7 +34,6 @@ onMount(async () => {
         error = err
     }
 })
-
 </script>
 
 <style lang="less">
@@ -46,16 +51,29 @@ onMount(async () => {
     padding: var(--main-margin);
 }
 
-.login-button {
-    box-sizing: border-box;
-    box-shadow: var(--background-color) 4px 4px 4px;
-    background: var(--spotify-green);
+.login-form {
+    margin: 4px auto;
     border-radius: 4px;
     font-weight: 600;
-    margin: 4px auto;
-    padding: 1em;
-    text-align: center;
     width: 80%;
-    cursor: pointer;
+
+    label {
+        display: inline-block;
+        padding: 1em 0;
+        width: 100%;
+        input {
+            height: 2em;
+            width: 50%;
+        }
+    }
+    
+    
+    .login-button {
+        box-shadow: var(--background-color) 4px 4px 4px;
+        background: var(--spotify-green);
+        padding: 1em;
+        text-align: center;
+        cursor: pointer;
+    }
 }
 </style>

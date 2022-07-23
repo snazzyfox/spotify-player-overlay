@@ -7,11 +7,14 @@ import {
     spotifyAuthVerifier, 
     spotifyTokenExpires, 
     spotifyRefreshToken,
+    spotifyClientId,
 } from '../stores'
 const REDIRECT_URI = location.origin + location.pathname; // strip off hash & querystring etc
-const CLIENT_ID = process.env.CLIENT_ID;
 
 export async function initLogin() {
+    if (!get(spotifyClientId)) {
+        throw 'No client ID was provided.'
+    }
     const verifier = cryptoRandomString(72);
     const codeChallenge = await hashCodeChallenge(verifier);
     const state = (Math.random() * 1e24).toString(36);
@@ -22,7 +25,7 @@ export async function initLogin() {
     spotifyAuthVerifier.set(verifier);
     const loginUrl = 'https://accounts.spotify.com/authorize?' + new URLSearchParams({
         response_type: 'code',
-        client_id: CLIENT_ID,
+        client_id: get(spotifyClientId),
         scope: 'user-read-playback-position user-read-playback-state user-read-currently-playing',
         redirect_uri: REDIRECT_URI,
         state: state,
@@ -50,7 +53,7 @@ export async function refreshToken() {
             await getToken({
                 grant_type: 'refresh_token',
                 refresh_token: get(spotifyRefreshToken),
-                client_id: CLIENT_ID,
+                client_id: get(spotifyClientId),
             })
         } catch (e) {
             // something's wrong with the refresh token, try auth code instead
@@ -67,7 +70,7 @@ export async function requestToken() {
             grant_type: 'authorization_code',
             code: get(spotifyAuthCode),
             redirect_uri: REDIRECT_URI,
-            client_id: CLIENT_ID,
+            client_id: get(spotifyClientId),
             code_verifier: get(spotifyAuthVerifier),
         })
     } catch (err) {

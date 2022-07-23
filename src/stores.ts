@@ -12,6 +12,7 @@ function storedWritable<T>(key: string) {
     return storeVar;
 }
 
+export const spotifyClientId = storedWritable<string>('SPOTIFY_CLIENT_ID');
 export const spotifyAuthToken = storedWritable<string>('SPOTIFY_TOKEN');
 export const spotifyAuthState = storedWritable<string>('SPOTIFY_AUTH_STATE');
 export const spotifyAuthCode = storedWritable<string>('SPOTIFY_AUTH_CODE');
