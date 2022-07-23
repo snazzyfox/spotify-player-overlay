@@ -56,6 +56,7 @@
     .marquee-mask {
         position: relative;
         mask-image: linear-gradient(to right, transparent 0, black var(--text-fade-width), black calc(100% - var(--text-fade-width)), transparent 100%);
+        -webkit-mask-image: $mask-image;
         white-space: nowrap;
     }
     .marquee-text {
