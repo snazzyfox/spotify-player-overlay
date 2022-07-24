@@ -1,8 +1,6 @@
 # Spotify Player Overlay
 
-A simple, client side only "now playing" card that you can use to display what you're playing in Spotify in OBS.
-
-If your music stops, you should be a
+A simple, client side only "now playing" card that you can use to display what you're playing in Spotify in OBS. The overlay automatically disappears when your music is paused or stopped.
 
 ## How to use
 
