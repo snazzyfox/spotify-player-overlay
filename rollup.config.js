@@ -1,5 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
 import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
@@ -8,7 +6,6 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
-import injectProcessEnv from 'rollup-plugin-inject-process-env';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -67,10 +64,6 @@ export default {
 			sourceMap: !production,
 			inlineSources: !production
 		}),
-
-		injectProcessEnv({ 
-            CLIENT_ID: process.env.CLIENT_ID,
-        }),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
