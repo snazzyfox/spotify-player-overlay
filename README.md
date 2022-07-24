@@ -13,6 +13,7 @@ This application has not yet been reviewed by Spotify and therefore cannot be us
 2. Go to "Dashboard", then "Create An App"
 3. Enter a name and description (anything goes), then click create.
 4. You will be taken to the App's page. Find the "Client ID" on this page. You will need it in the next step.
+5. Click on "Edit Settings", then add this tool `https://snazzyfox.github.io/spotify-player-overlay/` to allow it to use your account. Make sure the URL is entered exactly as shown here, without leading or trailing spaces.
 
 ### Adding the player to your stream
 
