@@ -1,7 +1,7 @@
 
 {#if nowPlaying}
 <main transition:fade="{{ duration: 500 }}">
-    {#each [nowPlaying] as nowPlaying (nowPlaying.trackName)}
+    {#key nowPlaying.trackName}
     <div class="nowplaying-container" in:slideIn="{{ pixels: 150, duration: 400 }}" out:slideOut="{{ pixels: 200, duration: 300 }}">
         <img class="album-art" src={nowPlaying.albumArtUrl} alt="Album Art" />
         <div class="text-container">
@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-    {/each}
+    {/key}
     <img class="spotify-logo" src="./assets/spotify_logo.svg" alt="Spotify Logo"/>
 </main>
 {/if}
@@ -46,7 +46,7 @@ async function updateNowPlaying() {
     nowPlaying = await getNowPlaying();
     let nextUpdateIn: number;
     if (nowPlaying) {
-        nextUpdateIn = Math.min(MAX_POLL_INTERVAL, nowPlaying.trackLengthMs - nowPlaying.progressMs + 2000)
+        nextUpdateIn = Math.min(MAX_POLL_INTERVAL, (nowPlaying.trackLengthMs - nowPlaying.progressMs + 2000) || MAX_POLL_INTERVAL);
         if (Math.abs(computedProgressMs - nowPlaying.progressMs) > 1000) {
             computedProgressMs = nowPlaying.progressMs;
         }
