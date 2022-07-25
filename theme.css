@@ -10,7 +10,7 @@ body {
 }
 
 :root {
-    --background-color: #191414cc; /* spotify black */
+    --background-color: #191414e0; /* spotify black */
     --background-shadow: #191414a0;
     --background-radius: 5vh;  
     --font-family: 'Montserrat', sans-serif;
