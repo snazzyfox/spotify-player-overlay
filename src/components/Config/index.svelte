@@ -22,8 +22,9 @@
         <h1 class="mbe8">Your Widget URL</h1>
         <p>Click the button below to generate a widget URL that you can use in your streaming software. 
             You can add this URL as a browser source.</p> 
-        <p class="mbe8">The adapts to the size of your source, so make sure you set the source to the size you need it to be. Avoid scaling the source within
-            OBS since that can create aliasing. A good size to start with is 600x240.</p>
+        <p class="mbe8">The overlay adapts to the size of your source, so make sure you set the source 
+            to the size you need it to be. Avoid scaling the source within OBS since that can create aliasing. 
+            A good size to start with is 600x240.</p>
         <Button type="primary" on:click={setConfString}>Generate</Button>
         {#if widgetUrl}
         <textarea class="mbs8">{ widgetUrl }</textarea>
