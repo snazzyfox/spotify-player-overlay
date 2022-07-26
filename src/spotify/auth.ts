@@ -9,7 +9,7 @@ import {
     spotifyRefreshToken,
     spotifyClientId,
 } from '../stores'
-const REDIRECT_URI = location.origin + location.pathname; // strip off hash & querystring etc
+const REDIRECT_URI = location.origin + location.pathname + '#spotify'; // strip off hash & querystring etc
 
 export async function initLogin() {
     if (!get(spotifyClientId)) {
@@ -33,7 +33,7 @@ export async function initLogin() {
         code_challenge: codeChallenge,
         show_dialog: 'false',
     }).toString();
-    window.location.href = loginUrl;
+    window.open(loginUrl, '_blank', 'popup,innerWidth=600,innerHeight=800');
 }
 
 async function getToken(params: {[key: string]: string}) {
@@ -44,6 +44,7 @@ async function getToken(params: {[key: string]: string}) {
         spotifyRefreshToken.set(response.data.refresh_token);
     }
     spotifyTokenExpires.set(new Date().getTime() + response.data.expires_in * 1000 - 10000); // 10 second buffer
+    setTimeout(refreshToken, response.data.expires_in * 1000 - 10000); 
 }
 
 export async function refreshToken() {
@@ -57,32 +58,24 @@ export async function refreshToken() {
             })
         } catch (e) {
             // something's wrong with the refresh token, try auth code instead
+            console.error(e);
             await requestToken();
         }
-    } else {
-        await requestToken();
     }
 }
 
 export async function requestToken() {
-    try {
-        await getToken({
-            grant_type: 'authorization_code',
-            code: get(spotifyAuthCode),
-            redirect_uri: REDIRECT_URI,
-            client_id: get(spotifyClientId),
-            code_verifier: get(spotifyAuthVerifier),
-        })
-    } catch (err) {
-        if (err.response?.data?.error === 'invalid_grant') {
-            initLogin()
-        } else {
-            throw err.response?.data?.error_description || 'failed to get token'
-        }
-    }
+    await getToken({
+        grant_type: 'authorization_code',
+        code: get(spotifyAuthCode),
+        redirect_uri: REDIRECT_URI,
+        client_id: get(spotifyClientId),
+        code_verifier: get(spotifyAuthVerifier),
+    })
+    /* There's no try-catch here - if this fails in the on-stream player, we can't just prompt another login */
 }
 
-export async function handleAuth() {
+export async function authCallback() {
     const qs = new URLSearchParams(location.search);
     history.replaceState(null, '', location.pathname); // wipe off auth code from url
     if (qs.get('state') && qs.get('state') === get(spotifyAuthState)) {
@@ -92,10 +85,7 @@ export async function handleAuth() {
             spotifyAuthCode.set(qs.get('code'));
             await requestToken();
         } else {
-            spotifyAuthCode.set(null);
-            spotifyAuthToken.set(null);
-            spotifyAuthVerifier.set(null);
-            spotifyRefreshToken.set(null);
+            authClear();
             if (qs.has('error')) {
                 throw qs.get('error');
             } else {
@@ -104,6 +94,13 @@ export async function handleAuth() {
         }
     }
     // not coming back from spotify, dont do anything
+}
+
+export function authClear() {
+    spotifyAuthCode.set(null);
+    spotifyAuthToken.set(null);
+    spotifyAuthVerifier.set(null);
+    spotifyRefreshToken.set(null);
 }
 
 function cryptoRandomString(length: number): string {

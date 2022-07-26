@@ -4,9 +4,13 @@
     </div>
 </div>
 
+<script lang="ts" context="module">
+    // static variable across all instances
+    let marqueeAnimateCounter = 0;
+</script>
+
 <script lang="ts">
     import {onMount} from 'svelte';
-    import {marqueeAnimateCounter} from '../stores'
     const SPEED = 0.25;
     let textElement: HTMLDivElement;
     let position = 0; // must match the left gradient level in CSS
@@ -17,11 +21,12 @@
     })
     
     function animate() {
-        if (!textElement) { return; }
-        if (textElement.offsetWidth < textElement.parentElement.offsetWidth) {
+        if (!textElement || !textElement.parentElement) { 
+            requestAnimationFrame(animate);  // do nothing but still request a frame in case it comes back
+        } else if (textElement.offsetWidth < textElement.parentElement.offsetWidth) {
             // fits on screen, no animation
             if (isInCounter) {
-                $marqueeAnimateCounter -= 1;
+                marqueeAnimateCounter -= 1;
                 isInCounter = false;
             }
             position = 0;
@@ -29,17 +34,17 @@
         } else if (textElement.offsetLeft + textElement.offsetWidth < 0) {
             // off screen to the left
             if (isInCounter) {
-                $marqueeAnimateCounter -= 1;
+                marqueeAnimateCounter -= 1;
                 isInCounter = false;
             }
-            if ($marqueeAnimateCounter === 0) {
+            if (marqueeAnimateCounter === 0) {
                 position = 100;
             }
             requestAnimationFrame(animate);
         } else if (Math.abs(position) < 0.001) {
             // pause for a few secs when at left end
             setTimeout(() => {
-                $marqueeAnimateCounter += 1;
+                marqueeAnimateCounter += 1;
                 isInCounter = true;
                 position -= SPEED;
                 requestAnimationFrame(animate);

@@ -1,8 +1,6 @@
 name: Build Pages
 
-on:
-  push: 
-    branches: [ main ]
+on: push
 
 jobs:
   build:
@@ -18,7 +16,15 @@ jobs:
         env:
           CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
       - uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: pages
           publish_dir: ./public
+      - uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref != 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: pages
+          publish_dir: ./public
+          destination_dir: refs/${{ github.ref_name }}

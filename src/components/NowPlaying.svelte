@@ -18,17 +18,21 @@
         </div>
     </div>
     {/key}
-    <img class="spotify-logo" src="./assets/spotify_logo.svg" alt="Spotify Logo"/>
+    <iconify-icon icon="fa-brands:spotify" class="spotify-logo"/>
 </main>
 {/if}
 <!-- Nothing shows if nothing is playing -->
 
 <script lang="ts">
 import { onMount } from 'svelte';
-import { getNowPlaying, NowPlaying } from '../spotifyApi/player';
+import { getNowPlaying, NowPlaying } from '../spotify/player';
 import { fade } from 'svelte/transition';
 import { slideOut, slideIn } from '../replaceSlideAnimation';
 import MarqueeTextLine from './MarqueeTextLine.svelte';
+import { refreshToken } from '../spotify/auth';
+import { twitchAuthToken, twitchCommand, twitchListenChannel } from '../stores';
+import { getTwitchUser } from '../twitch/api';
+import ComfyJS from 'comfy.js';
 
 export let nowPlaying: NowPlaying | null = null;
 export let computedProgressMs: number = 0;
@@ -36,10 +40,12 @@ const MAX_POLL_INTERVAL = 5000;
 const PROGRESS_UPDATE_INTERVAL = 500;
 
 onMount(async () => {
-    await updateNowPlaying()
+    await refreshToken();
+    await updateNowPlaying();
     setInterval(() => {
         computedProgressMs = Math.min(computedProgressMs + PROGRESS_UPDATE_INTERVAL, nowPlaying?.trackLengthMs || 0);
     }, PROGRESS_UPDATE_INTERVAL);
+    startTwitchBot();
 })
 
 async function updateNowPlaying() {
@@ -59,7 +65,7 @@ async function updateNowPlaying() {
     setTimeout(updateNowPlaying, nextUpdateIn);
 }
 
-export function formatTime(millis: number): string {
+function formatTime(millis: number): string {
     let result = '';
     const hours = Math.floor(millis / 3600000);
     if (hours > 0) { result += hours.toString() + ':' }
@@ -69,6 +75,22 @@ export function formatTime(millis: number): string {
     const seconds = Math.floor((millis % 60000) / 1000);
     result += seconds.toString().padStart(2, '0');
     return result;
+}
+
+async function startTwitchBot() {
+    if ($twitchAuthToken) {
+        const twitchUser = await getTwitchUser();
+        ComfyJS.onCommand = (user, command) => {
+            if (command === $twitchCommand) {
+                if (nowPlaying) {
+                    ComfyJS.Say(`@${user} -> now playing ${nowPlaying.trackName} by ${nowPlaying.artistNames.join(',')} on Spotify: ${nowPlaying.trackUrl}`, twitchUser.login);
+                } else {
+                    ComfyJS.Say(`@${user} -> nothing is playing on Spotify at the moment.`, twitchUser.login);
+                }
+            }
+        }
+        ComfyJS.Init(twitchUser.login, 'oauth:' + $twitchAuthToken, $twitchListenChannel || twitchUser.login);
+    }
 }
 </script>
 
@@ -81,6 +103,7 @@ main {
 	border-radius: var(--background-radius);
 	height: calc(100vh - 2 * var(--main-margin));
 	width: calc(100vw - 2 * var(--main-margin));
+    margin: var(--main-margin);
 }
 
 .nowplaying-container {
@@ -98,7 +121,7 @@ main {
     position: absolute;
     top: 3vmin;
     right: 3vmin;
-    height: 10vmin;
+    font-size: 10vmin;
 }
 
 .album-art {
@@ -134,7 +157,7 @@ main {
 
 .time {
     color: var(--time-color);
-    font-family: 'Overpass Mono', monospace;
+    font-family: var(--font-family-mono);
     font-size: 7vmin;
 
     &.total {

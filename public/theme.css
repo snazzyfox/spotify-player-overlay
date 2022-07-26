@@ -1,12 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Overpass+Mono&display=swap');
-body {
-    margin: 0;
-    padding: var(--main-margin);
-    overflow: hidden;
-}
-
 * {
     font-family: var(--font-family);
+}
+
+code {
+    font-family: var(--font-family-mono);
 }
 
 :root {
@@ -14,9 +12,17 @@ body {
     --background-shadow: #191414a0;
     --background-radius: 5vh;  
     --font-family: 'Montserrat', sans-serif;
+    --font-family-mono: 'Overpass Mono', monospace;
     --main-margin: 5vh;
     --text-color: #ffffff;
     --time-color: #bbbbbb;
-    --spotify-green: #1D8954;
     --text-fade-width: 3vmin;
+
+    --spotify-green: #1D8954;
+    --twitch-purple: #9146FF;
+}
+
+/* Used by the UI framework for config page - no need to override for use */
+:root {
+    --agnostic-font-family: var(--font-family);
 }
