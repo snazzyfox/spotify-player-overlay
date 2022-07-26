@@ -3,8 +3,16 @@ import LZString from 'lz-string';
 
 const knownStoreVars: string[] = [];
 
+function jsonParseOrNull(s: string) {
+    try {
+        return JSON.parse(s);
+    } catch (e) {
+        return null
+    }
+}
+
 function storedWritable<T>(key: string) {
-    const storeVar = writable<T>(JSON.parse(localStorage.getItem(key)));
+    const storeVar = writable<T>(jsonParseOrNull(localStorage.getItem(key)));
     // forward sync from app state to local storage
     storeVar.subscribe((newValue) => {
         if (newValue !== null) {
@@ -19,7 +27,7 @@ function storedWritable<T>(key: string) {
         if (event.key === null) {
             storeVar.set(null);
         } else if (event.key === key && event.oldValue !== event.newValue) {
-            storeVar.set(JSON.parse(event.newValue));
+            storeVar.set(jsonParseOrNull(event.newValue));
         }
     })
     knownStoreVars.push(key);
