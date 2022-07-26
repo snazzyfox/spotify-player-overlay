@@ -62,7 +62,7 @@
     $: (async s => s ? await getCurrentUser() : null)($spotifySignedIn).then(u => currentUser = u);
 
     function validateSpotifyClientID(s: string): boolean {
-        return !!s.match(/^[a-z0-9]{32}$/);
+        return s && !!s.match(/^[a-z0-9]{32}$/);
     }
 
 </script>

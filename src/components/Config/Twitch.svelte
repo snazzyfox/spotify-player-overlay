@@ -41,7 +41,7 @@ If you don't need this functionality, do not connect your account here.
     let currentUser: TwitchUser;
     $: (async s => s ? await getTwitchUser() : null)($twitchSignedIn).then(u => {
         currentUser = u;
-        $twitchListenChannel = u.login;
+        $twitchListenChannel = u?.login || null;
         $twitchCommand = $twitchCommand || 'song';
     });
 </script>
