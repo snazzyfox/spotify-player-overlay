@@ -2,15 +2,9 @@ import SpotifyWebApi from 'spotify-web-api-js';
 import { spotifyAuthToken, spotifyTokenExpires } from '../stores';
 import { refreshToken } from './auth'
 
+let tokenSet: boolean = false;
 const spotify = new SpotifyWebApi();
-spotifyAuthToken.subscribe((token: string) => spotify.setAccessToken(token));
-spotifyTokenExpires.subscribe((expires: number) => {
-    if (expires) {
-        const now = new Date().getTime();
-        if (expires <= now) { refreshToken(); }
-        else { setTimeout(refreshToken, expires - now); }
-    }
-})
+spotifyAuthToken.subscribe((token: string) => { spotify.setAccessToken(token); tokenSet = true});
 
 export interface NowPlaying {
     albumName: string
@@ -19,12 +13,16 @@ export interface NowPlaying {
     trackName: string
     trackLengthMs: number 
     progressMs: number
+    trackUrl: string
 }
 
 export async function getNowPlaying(): Promise<NowPlaying | null> {
+    if (!tokenSet) {
+        return null;
+    }
     const playbackState = await spotify.getMyCurrentPlaybackState();
     if (!playbackState.is_playing || !playbackState.item) {
-        return null
+        return null;
     }
     return {
         albumName: playbackState.item.album.name,
@@ -33,5 +31,15 @@ export async function getNowPlaying(): Promise<NowPlaying | null> {
         trackName: playbackState.item.name,
         trackLengthMs: playbackState.item.duration_ms,
         progressMs: playbackState.progress_ms,
+        trackUrl: playbackState.item.external_urls.spotify,
+    };
+}
+
+export async function getCurrentUser() {
+    if (tokenSet) {
+        return await spotify.getMe();
+    } else {
+        return null;
     }
+    
 }
