@@ -16,7 +16,7 @@
             and log in with your Spotify account.</li>
         <li>Go to "Dashboard", then "Create An App".</li>
         <li>Enter a name and description (anything goes), then click create.</li>
-        <li>Click on "Edit Settings", and find "Redirect URIs". Add this tool <code>https://snazzyfox.github.io/spotify-player-overlay/#callback</code> 
+        <li>Click on "Edit Settings", and find "Redirect URIs". Add this tool <code>{window.location.origin}{window.location.pathname}#spotify</code> 
             to the list. Make sure you enter the URL exactly as shown here, without leading or trailing spaces, and include the trailing slash.</li>
         <li>On the App's information page, you will find the "Client ID". Copy its value into the box on this page.</li>
     </ol> 
@@ -74,4 +74,7 @@
     margin-right: 1rem;
 }
 
+p, li {
+    margin-block-end: 0.5em;
+}
 </style>
