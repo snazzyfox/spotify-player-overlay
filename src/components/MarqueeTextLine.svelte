@@ -45,9 +45,11 @@
             // pause for a few secs when at left end
             position = 0;
             setTimeout(() => {
-                marqueeAnimateCounter++;
-                isInCounter = true;
-                position -= SPEED;
+                if (!isInCounter) {
+                    marqueeAnimateCounter++;
+                    isInCounter = true;
+                }
+                position -= SPEED * 2; // first frame is double speed to avoid FP issues
                 requestAnimationFrame(animate);
             }, 2000);
         } else {
