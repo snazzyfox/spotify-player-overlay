@@ -44,7 +44,9 @@ export const spotifyRefreshToken = storedWritable<string>('SPOTIFY_REFRESH_TOKEN
 export const twitchAuthToken = storedWritable<string>('TWITCH_AUTH_TOKEN');
 export const twitchAuthState = storedWritable<string>('TWITCH_AUTH_STATE');
 export const twitchListenChannel = storedWritable<string>('TWITCH_LISTEN_CHANNEL');
-export const twitchCommand = storedWritable<string>('TWITCH_COMMAND');
+export const twitchInfoCommand = storedWritable<string>('TWITCH_COMMAND');
+export const twitchShowCommand = storedWritable<string>('TWITCH_COMMAND_SHOW');
+export const autoHideTime = storedWritable<number>('AUTO_HIDE_TIME');
 
 export const spotifySignedIn = derived(spotifyAuthToken, $spotifyAuthToken => $spotifyAuthToken !== null);
 export const twitchSignedIn = derived(twitchAuthToken, $twitchAuthToken => $twitchAuthToken !== null);

@@ -15,9 +15,16 @@ If you don't need this functionality, do not connect your account here.
         <Input label="Listen for commands in channel" bind:value={$twitchListenChannel}/>
     </div>
     <div class="form-item mbe8">
-        <Input label="Command to listen for" bind:value={$twitchCommand} hasLeftAddon>
+        <Input label="Song Information Command" bind:value={$twitchInfoCommand} hasLeftAddon>
             <InputAddonItem addonLeft slot="addonLeft"><iconify-icon icon="emojione-monotone:exclamation-mark"/></InputAddonItem>
         </Input>
+        This command posts the current song's name, artist, and link to Spotify in your chat.
+    </div>
+    <div class="form-item mbe8">
+        <Input label="Show Player Command" bind:value={$twitchShowCommand} hasLeftAddon>
+            <InputAddonItem addonLeft slot="addonLeft"><iconify-icon icon="emojione-monotone:exclamation-mark"/></InputAddonItem>
+        </Input>
+        This command makes the player show up on screen if it's auto-hidden.
     </div>
 {:else}
     <div class="form-item mbe8">
@@ -33,7 +40,7 @@ If you don't need this functionality, do not connect your account here.
 {/if}
 
 <script lang="ts">
-    import { twitchCommand, twitchListenChannel, twitchSignedIn } from '../../stores'
+    import { twitchInfoCommand, twitchListenChannel, twitchSignedIn, twitchShowCommand } from '../../stores'
     import { TwitchUser, getTwitchUser } from '../../twitch/api'
     import { Avatar, Button, Input, InputAddonItem } from 'agnostic-svelte';
     import { initLogin, authClear } from '../../twitch/auth';
@@ -42,7 +49,8 @@ If you don't need this functionality, do not connect your account here.
     $: (async s => s ? await getTwitchUser() : null)($twitchSignedIn).then(u => {
         currentUser = u;
         $twitchListenChannel = u?.login || null;
-        $twitchCommand = $twitchCommand || 'song';
+        $twitchInfoCommand = $twitchInfoCommand || 'songinfo';
+        $twitchShowCommand = $twitchShowCommand || 'song';
     });
 </script>
 

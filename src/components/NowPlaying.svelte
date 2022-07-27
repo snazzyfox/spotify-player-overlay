@@ -1,5 +1,5 @@
 
-{#if nowPlaying}
+{#if nowPlaying && playerVisible}
 <main transition:fade="{{ duration: 500 }}">
     {#key nowPlaying && nowPlaying.trackName}
     <div class="nowplaying-container" in:slideIn="{{ pixels: 150, duration: 400 }}" out:slideOut="{{ pixels: 200, duration: 300 }}">
@@ -30,12 +30,13 @@ import { fade } from 'svelte/transition';
 import { slideOut, slideIn } from '../replaceSlideAnimation';
 import MarqueeTextLine from './MarqueeTextLine.svelte';
 import { refreshToken } from '../spotify/auth';
-import { twitchAuthToken, twitchCommand, twitchListenChannel } from '../stores';
+import { twitchAuthToken, twitchInfoCommand, twitchListenChannel, twitchShowCommand, autoHideTime } from '../stores';
 import { getTwitchUser } from '../twitch/api';
 import ComfyJS from 'comfy.js';
 
 export let nowPlaying: NowPlaying | null = null;
 export let computedProgressMs: number = 0;
+export let playerVisible: boolean = true;
 const MAX_POLL_INTERVAL = 5000;
 const PROGRESS_UPDATE_INTERVAL = 500;
 
@@ -49,7 +50,11 @@ onMount(async () => {
 })
 
 async function updateNowPlaying() {
+    const lastSong = nowPlaying;
     nowPlaying = await getNowPlaying();
+    if (lastSong?.trackName !== nowPlaying?.trackName) {
+        showPlayer();
+    }
     let nextUpdateIn: number;
     if (nowPlaying) {
         nextUpdateIn = Math.min(MAX_POLL_INTERVAL, (nowPlaying.trackLengthMs - nowPlaying.progressMs + 2000) || MAX_POLL_INTERVAL);
@@ -77,16 +82,32 @@ function formatTime(millis: number): string {
     return result;
 }
 
+let timeoutId: number = 0;
+function showPlayer() {
+    if (nowPlaying) {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        playerVisible = true;
+        if (Number($autoHideTime)) {
+            timeoutId = setTimeout(() => playerVisible = false, Number($autoHideTime) * 1000);
+        }
+    }
+}
+
 async function startTwitchBot() {
     if ($twitchAuthToken) {
         const twitchUser = await getTwitchUser();
         ComfyJS.onCommand = (user, command) => {
-            if (command === $twitchCommand) {
+            if (command === $twitchInfoCommand) {
                 if (nowPlaying) {
                     ComfyJS.Say(`@${user} -> now playing ${nowPlaying.trackName} by ${nowPlaying.artistNames.join(',')} on Spotify: ${nowPlaying.trackUrl}`, twitchUser.login);
                 } else {
                     ComfyJS.Say(`@${user} -> nothing is playing on Spotify at the moment.`, twitchUser.login);
                 }
+            }
+            if (command === $twitchShowCommand) {
+                showPlayer();
             }
         }
         ComfyJS.Init(twitchUser.login, 'oauth:' + $twitchAuthToken, $twitchListenChannel || twitchUser.login);
