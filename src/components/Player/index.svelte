@@ -24,15 +24,15 @@
 <!-- Nothing shows if nothing is playing -->
 
 <script lang="ts">
-import { onMount } from 'svelte';
-import { getNowPlaying, NowPlaying } from '../spotify/player';
-import { fade } from 'svelte/transition';
-import { slideOut, slideIn } from '../replaceSlideAnimation';
-import MarqueeTextLine from './MarqueeTextLine.svelte';
-import { refreshToken } from '../spotify/auth';
-import { twitchAuthToken, twitchInfoCommand, twitchListenChannel, twitchShowCommand, autoHideTime } from '../stores';
-import { getTwitchUser } from '../twitch/api';
+import { slideIn, slideOut } from '@/replaceSlideAnimation';
+import { refreshToken } from '@/spotify/auth';
+import { getNowPlaying, NowPlaying } from '@/spotify/player';
+import { autoHideTime, twitchAuthToken, twitchInfoCommand, twitchListenChannel, twitchShowCommand } from '@/stores';
+import { getTwitchUser } from '@/twitch/api';
 import ComfyJS from 'comfy.js';
+import { onMount } from 'svelte';
+import { fade } from 'svelte/transition';
+import MarqueeTextLine from './MarqueeTextLine.svelte';
 
 export let nowPlaying: NowPlaying | null = null;
 export let computedProgressMs: number = 0;
@@ -41,7 +41,6 @@ const MAX_POLL_INTERVAL = 5000;
 const PROGRESS_UPDATE_INTERVAL = 500;
 
 onMount(async () => {
-    await refreshToken();
     await updateNowPlaying();
     setInterval(() => {
         computedProgressMs = Math.min(computedProgressMs + PROGRESS_UPDATE_INTERVAL, nowPlaying?.trackLengthMs || 0);
@@ -51,7 +50,19 @@ onMount(async () => {
 
 async function updateNowPlaying() {
     const lastSong = nowPlaying;
-    nowPlaying = await getNowPlaying();
+    try {
+        nowPlaying = await getNowPlaying();
+    } catch (e) {
+        /* Refresh Spotify token if needed. This is handled here inside the player, not at the API call layer, because each refresh token
+           can only be used once. Doing so at the API layer has the risk of the config page using up a refresh token that was previously 
+           passed to a player, which will be unable to refresh itself when necessary later.
+           */
+        if (e.status === 401 && e.response.includes('token expired')) {
+            await refreshToken();
+            return;
+        }
+    }
+    
     if (lastSong?.trackName !== nowPlaying?.trackName) {
         showPlayer();
     }

@@ -42,38 +42,38 @@
 </main>
 
 <script lang="ts">
-    import { Alert, Button, Dialog } from 'agnostic-svelte';
-    import { dumpState } from '../../stores';
-    import SpotifyLogin from './Spotify.svelte';
-    import TwitchConfig from './Twitch.svelte';
-    import PlayerConfig from './Player.svelte';
-    import { spotifySignedIn } from '../../stores';
+import { Alert, Button, Dialog } from 'agnostic-svelte';
+import { dumpState } from '../../stores';
+import SpotifyLogin from './Spotify.svelte';
+import TwitchConfig from './Twitch.svelte';
+import PlayerConfig from './Player.svelte';
+import { spotifySignedIn } from '../../stores';
 
-    let widgetUrl: string = '';
+let widgetUrl: string = '';
 
-    function setConfString() {
-        if ($spotifySignedIn) {
-            const url = new URL(window.location.href);
-            url.hash = '#widget'
-            url.search = dumpState();
-            widgetUrl = url.toString();
-        } else {
-            widgetUrl = 'You must sign in to Spotify first.'
-        }
+function setConfString() {
+    if ($spotifySignedIn) {
+        const url = new URL(window.location.href);
+        url.hash = '#widget'
+        url.search = dumpState();
+        widgetUrl = url.toString();
+    } else {
+        widgetUrl = 'You must sign in to Spotify first.'
     }
+}
 </script>
 
 <style lang="less">
-    .config-container {
-        margin: 10vh auto;
-        max-width: 1000px;
-    }
+.config-container {
+    margin: 10vh auto;
+    max-width: 1000px;
+}
 
-    textarea {
-        display: block;
-        width: 100%;
-        height: 4em;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
+textarea {
+    display: block;
+    width: 100%;
+    height: 4em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
 </style>

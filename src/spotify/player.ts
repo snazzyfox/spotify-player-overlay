@@ -1,6 +1,5 @@
 import SpotifyWebApi from 'spotify-web-api-js';
-import { spotifyAuthToken, spotifyTokenExpires } from '../stores';
-import { refreshToken } from './auth'
+import { spotifyAuthToken } from '../stores';
 
 let tokenSet: boolean = false;
 const spotify = new SpotifyWebApi();
@@ -41,5 +40,4 @@ export async function getCurrentUser() {
     } else {
         return null;
     }
-    
 }

@@ -51,20 +51,19 @@
 {/if}
 
 <script lang="ts">
-    import { Avatar, Input, Button, Dialog } from 'agnostic-svelte';
-    import { getCurrentUser } from '../../spotify/player';
-    import { spotifyClientId, spotifySignedIn } from '../../stores';
-    import { initLogin, authClear } from '../../spotify/auth';
+import { Avatar, Input, Button, Dialog } from 'agnostic-svelte';
+import { getCurrentUser } from '../../spotify/player';
+import { spotifyClientId, spotifySignedIn } from '../../stores';
+import { initLogin, authClear } from '../../spotify/auth';
 
-    let dialog: Dialog | null = null;
+let dialog: Dialog | null = null;
 
-    let currentUser: SpotifyApi.CurrentUsersProfileResponse;
-    $: (async s => s ? await getCurrentUser() : null)($spotifySignedIn).then(u => currentUser = u);
+let currentUser: SpotifyApi.CurrentUsersProfileResponse;
+$: (async s => s ? await getCurrentUser() : null)($spotifySignedIn).then(u => currentUser = u);
 
-    function validateSpotifyClientID(s: string): boolean {
-        return s && !!s.match(/^[a-z0-9]{32}$/);
-    }
-
+function validateSpotifyClientID(s: string): boolean {
+    return s && !!s.match(/^[a-z0-9]{32}$/);
+}
 </script>
 
 <style lang="less">

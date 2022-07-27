@@ -5,10 +5,9 @@ import {
     spotifyAuthToken, 
     spotifyAuthCode, 
     spotifyAuthVerifier, 
-    spotifyTokenExpires, 
     spotifyRefreshToken,
     spotifyClientId,
-} from '../stores'
+} from '../stores';
 const REDIRECT_URI = location.origin + location.pathname + '#spotify'; // strip off hash & querystring etc
 
 export async function initLogin() {
@@ -19,7 +18,6 @@ export async function initLogin() {
     const codeChallenge = await hashCodeChallenge(verifier);
     const state = (Math.random() * 1e24).toString(36);
     spotifyAuthToken.set(null);
-    spotifyTokenExpires.set(null);
     spotifyAuthCode.set(null);
     spotifyAuthState.set(state);
     spotifyAuthVerifier.set(verifier);
@@ -43,8 +41,6 @@ async function getToken(params: {[key: string]: string}) {
     if (response.data.refresh_token) {
         spotifyRefreshToken.set(response.data.refresh_token);
     }
-    spotifyTokenExpires.set(new Date().getTime() + response.data.expires_in * 1000 - 10000); // 10 second buffer
-    setTimeout(refreshToken, response.data.expires_in * 1000 - 10000); 
 }
 
 export async function refreshToken() {

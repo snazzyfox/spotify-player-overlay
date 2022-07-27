@@ -40,23 +40,23 @@ If you don't need this functionality, do not connect your account here.
 {/if}
 
 <script lang="ts">
-    import { twitchInfoCommand, twitchListenChannel, twitchSignedIn, twitchShowCommand } from '../../stores'
-    import { TwitchUser, getTwitchUser } from '../../twitch/api'
-    import { Avatar, Button, Input, InputAddonItem } from 'agnostic-svelte';
-    import { initLogin, authClear } from '../../twitch/auth';
+import { twitchInfoCommand, twitchListenChannel, twitchSignedIn, twitchShowCommand } from '../../stores'
+import { TwitchUser, getTwitchUser } from '../../twitch/api'
+import { Avatar, Button, Input, InputAddonItem } from 'agnostic-svelte';
+import { initLogin, authClear } from '../../twitch/auth';
 
-    let currentUser: TwitchUser;
-    $: (async s => s ? await getTwitchUser() : null)($twitchSignedIn).then(u => {
-        currentUser = u;
-        $twitchListenChannel = u?.login || null;
-        $twitchInfoCommand = $twitchInfoCommand || 'songinfo';
-        $twitchShowCommand = $twitchShowCommand || 'song';
-    });
+let currentUser: TwitchUser;
+$: (async s => s ? await getTwitchUser() : null)($twitchSignedIn).then(u => {
+    currentUser = u;
+    $twitchListenChannel = u?.login || null;
+    $twitchInfoCommand = $twitchInfoCommand || 'songinfo';
+    $twitchShowCommand = $twitchShowCommand || 'song';
+});
 </script>
 
 <style lang="less">    
-    .twitch-icon {
-        font-size: 2em;
-        margin-right: 1rem;
-    }
+.twitch-icon {
+    font-size: 2em;
+    margin-right: 1rem;
+}
 </style>

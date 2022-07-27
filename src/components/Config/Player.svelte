@@ -6,6 +6,6 @@
 </div>
 
 <script lang="ts">
-    import { autoHideTime } from '../../stores';
-    import { Input } from 'agnostic-svelte';
+import { autoHideTime } from '../../stores';
+import { Input } from 'agnostic-svelte';
 </script>
