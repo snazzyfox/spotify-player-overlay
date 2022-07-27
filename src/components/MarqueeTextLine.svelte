@@ -34,17 +34,18 @@
         } else if (textElement.offsetLeft + textElement.offsetWidth < 0) {
             // off screen to the left
             if (isInCounter) {
-                marqueeAnimateCounter -= 1;
+                marqueeAnimateCounter--;
                 isInCounter = false;
             }
-            if (marqueeAnimateCounter === 0) {
+            if (marqueeAnimateCounter <= 0) {
                 position = 100;
             }
             requestAnimationFrame(animate);
-        } else if (Math.abs(position) < 0.001) {
+        } else if (Math.abs(position) < SPEED) {
             // pause for a few secs when at left end
+            position = 0;
             setTimeout(() => {
-                marqueeAnimateCounter += 1;
+                marqueeAnimateCounter++;
                 isInCounter = true;
                 position -= SPEED;
                 requestAnimationFrame(animate);
@@ -63,6 +64,7 @@
         mask-image: linear-gradient(to right, transparent 0, black var(--text-fade-width), black calc(100% - var(--text-fade-width)), transparent 100%);
         -webkit-mask-image: $mask-image;
         white-space: nowrap;
+        overflow: hidden;
     }
     .marquee-text {
         position: relative;
