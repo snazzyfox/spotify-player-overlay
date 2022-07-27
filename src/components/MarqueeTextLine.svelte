@@ -1,5 +1,5 @@
 <div class="marquee-mask">
-    <div class="marquee-text" bind:this={textElement} style="left: calc(var(--text-fade-width) + {position}%);">
+    <div class="marquee-text" bind:this={textElement} style="left: calc(var(--text-fade-width) + {position}px);">
         <slot/>
     </div>
 </div>
@@ -11,7 +11,7 @@
 
 <script lang="ts">
     import {onMount} from 'svelte';
-    const SPEED = 0.25;
+    const SPEED = 1.5;  // px per second
     let textElement: HTMLDivElement;
     let position = 0; // must match the left gradient level in CSS
     let isInCounter = false;
@@ -26,19 +26,20 @@
         } else if (textElement.offsetWidth < textElement.parentElement.offsetWidth) {
             // fits on screen, no animation
             if (isInCounter) {
-                marqueeAnimateCounter -= 1;
+                marqueeAnimateCounter--;
                 isInCounter = false;
             }
             position = 0;
             requestAnimationFrame(animate);
         } else if (textElement.offsetLeft + textElement.offsetWidth < 0) {
-            // off screen to the left
+            // fully off screen to the left
             if (isInCounter) {
                 marqueeAnimateCounter--;
                 isInCounter = false;
             }
             if (marqueeAnimateCounter <= 0) {
-                position = 100;
+                marqueeAnimateCounter = 0;
+                position = textElement.parentElement.offsetWidth;
             }
             requestAnimationFrame(animate);
         } else if (Math.abs(position) < SPEED) {
@@ -49,7 +50,7 @@
                     marqueeAnimateCounter++;
                     isInCounter = true;
                 }
-                position -= SPEED * 2; // first frame is double speed to avoid FP issues
+                position -= SPEED; 
                 requestAnimationFrame(animate);
             }, 2000);
         } else {
