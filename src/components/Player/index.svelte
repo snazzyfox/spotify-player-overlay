@@ -5,9 +5,9 @@
     <div class="nowplaying-container" in:slideIn="{{ pixels: 150, duration: 400 }}" out:slideOut="{{ pixels: 200, duration: 300 }}">
         <img class="album-art" src={nowPlaying && nowPlaying.albumArtUrl} alt="Album Art" />
         <div class="text-container">
-            <div class="track-name"><MarqueeTextLine>{ nowPlaying && nowPlaying.trackName }</MarqueeTextLine></div>
-            <div class="album-name"><MarqueeTextLine>{ nowPlaying && nowPlaying.albumName }</MarqueeTextLine></div>
-            <div class="artist-name"><MarqueeTextLine>{ nowPlaying && nowPlaying.artistNames.join(", ") }</MarqueeTextLine></div>
+            <div class="track-name"><MarqueeTextLine name="track">{ nowPlaying && nowPlaying.trackName }</MarqueeTextLine></div>
+            <div class="album-name"><MarqueeTextLine name="album">{ nowPlaying && nowPlaying.albumName }</MarqueeTextLine></div>
+            <div class="artist-name"><MarqueeTextLine name="artist">{ nowPlaying && nowPlaying.artistNames.join(", ") }</MarqueeTextLine></div>
             <div class="progress-bar-container">
                 <div class="time elapsed">{ formatTime(computedProgressMs) }</div>
                 <div class="progress-bar">
@@ -34,9 +34,9 @@ import { onMount } from 'svelte';
 import { fade } from 'svelte/transition';
 import MarqueeTextLine from './MarqueeTextLine.svelte';
 
-export let nowPlaying: NowPlaying | null = null;
-export let computedProgressMs: number = 0;
-export let playerVisible: boolean = true;
+let nowPlaying: NowPlaying | null = null;
+let computedProgressMs: number = 0;
+let playerVisible: boolean = true;
 const MAX_POLL_INTERVAL = 5000;
 const PROGRESS_UPDATE_INTERVAL = 500;
 
@@ -168,14 +168,14 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 60vh;
+    height: 65vh;
     max-width: calc(100% - 85vh);
     flex: 1 0 auto;
 
     .track-name {
-        font-size: 13vh;
+        font-size: 14vh;
         font-weight: 600;
-        margin-bottom: 8vh;
+        margin-bottom: 5vh;
     }
     .album-name, .artist-name {
         font-size: 8vh;

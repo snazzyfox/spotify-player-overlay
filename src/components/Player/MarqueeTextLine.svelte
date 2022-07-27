@@ -6,11 +6,13 @@
 
 <script lang="ts" context="module">
 // static variable across all instances
-let marqueeAnimateCounter = 0;
+const runningMarquees = new Set<string>();
 </script>
 
 <script lang="ts">
 import { onMount, onDestroy } from 'svelte';
+export let name: string;
+
 const SPEED = 1.5;  // px per second
 let textElement: HTMLDivElement;
 let position = 0;
@@ -21,9 +23,7 @@ onMount(() => {
 })
 
 onDestroy(() => {
-    if (isInCounter) {
-        marqueeAnimateCounter--;
-    }
+    runningMarquees.delete(name);
 })
 
 function animate() {
@@ -31,20 +31,13 @@ function animate() {
         requestAnimationFrame(animate);  // do nothing but still request a frame in case it comes back
     } else if (textElement.offsetWidth < textElement.parentElement.offsetWidth) {
         // fits on screen, no animation
-        if (isInCounter) {
-            marqueeAnimateCounter--;
-            isInCounter = false;
-        }
+        runningMarquees.delete(name);
         position = 0;
         requestAnimationFrame(animate);
     } else if (textElement.offsetLeft + textElement.offsetWidth < 0) {
         // fully off screen to the left
-        if (isInCounter) {
-            marqueeAnimateCounter--;
-            isInCounter = false;
-        }
-        if (marqueeAnimateCounter <= 0) {
-            marqueeAnimateCounter = 0;
+        runningMarquees.delete(name);
+        if (runningMarquees.size === 0) {
             position = textElement.parentElement.offsetWidth;
         }
         requestAnimationFrame(animate);
@@ -52,10 +45,7 @@ function animate() {
         // pause for a few secs when at left end
         position = 0;
         setTimeout(() => {
-            if (!isInCounter) {
-                marqueeAnimateCounter++;
-                isInCounter = true;
-            }
+            runningMarquees.add(name);
             position -= SPEED; 
             requestAnimationFrame(animate);
         }, 2000);
