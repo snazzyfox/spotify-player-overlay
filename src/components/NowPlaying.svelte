@@ -1,13 +1,13 @@
 
 {#if nowPlaying}
 <main transition:fade="{{ duration: 500 }}">
-    {#key nowPlaying.trackName}
+    {#key nowPlaying && nowPlaying.trackName}
     <div class="nowplaying-container" in:slideIn="{{ pixels: 150, duration: 400 }}" out:slideOut="{{ pixels: 200, duration: 300 }}">
-        <img class="album-art" src={nowPlaying.albumArtUrl} alt="Album Art" />
+        <img class="album-art" src={nowPlaying && nowPlaying.albumArtUrl} alt="Album Art" />
         <div class="text-container">
-            <div class="track-name"><MarqueeTextLine>{ nowPlaying.trackName }</MarqueeTextLine></div>
-            <div class="album-name"><MarqueeTextLine>{ nowPlaying.albumName }</MarqueeTextLine></div>
-            <div class="artist-name"><MarqueeTextLine>{ nowPlaying.artistNames.join(", ") }</MarqueeTextLine></div>
+            <div class="track-name"><MarqueeTextLine>{ nowPlaying && nowPlaying.trackName }</MarqueeTextLine></div>
+            <div class="album-name"><MarqueeTextLine>{ nowPlaying && nowPlaying.albumName }</MarqueeTextLine></div>
+            <div class="artist-name"><MarqueeTextLine>{ nowPlaying && nowPlaying.artistNames.join(", ") }</MarqueeTextLine></div>
             <div class="progress-bar-container">
                 <div class="time elapsed">{ formatTime(computedProgressMs) }</div>
                 <div class="progress-bar">
