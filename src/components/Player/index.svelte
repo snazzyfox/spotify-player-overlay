@@ -93,7 +93,7 @@ function formatTime(millis: number): string {
     return result;
 }
 
-let timeoutId: number = 0;
+let timeoutId: ReturnType<typeof setTimeout>;
 function showPlayer() {
     if (nowPlaying) {
         if (timeoutId) {
@@ -135,6 +135,7 @@ main {
 	border-radius: var(--background-radius);
 	height: calc(100vh - 2 * var(--main-margin));
 	width: calc(100vw - 2 * var(--main-margin));
+    min-width: 150vh;
     margin: var(--main-margin);
 }
 
@@ -142,18 +143,18 @@ main {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    gap: 6vmin;
+    gap: 6vh;
 
-    padding: 7vmin;
+    padding: 7vh;
     height: 100%;
     width: 100%;
 }
 
 .spotify-logo {
     position: absolute;
-    top: 3vmin;
-    right: 3vmin;
-    font-size: 10vmin;
+    top: 3vh;
+    right: 3vh;
+    font-size: 10vh;
 }
 
 .album-art {
@@ -167,17 +168,17 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 60vmin;
-    max-width: calc(100% - 85vmin);
+    height: 60vh;
+    max-width: calc(100% - 85vh);
     flex: 1 0 auto;
 
     .track-name {
-        font-size: 13vmin;
+        font-size: 13vh;
         font-weight: 600;
-        margin-bottom: 8vmin;
+        margin-bottom: 8vh;
     }
     .album-name, .artist-name {
-        font-size: 8vmin;
+        font-size: 8vh;
     }
 }
 
@@ -190,7 +191,7 @@ main {
 .time {
     color: var(--time-color);
     font-family: var(--font-family-mono);
-    font-size: 7vmin;
+    font-size: 7vh;
 
     &.total {
         text-align: right;
@@ -199,15 +200,15 @@ main {
 
 .progress-bar {
     background: #ffffff66;
-    border-radius: 1.2vmin;
+    border-radius: 1.2vh;
     flex: 1;
-    height: 2.5vmin;
-    margin: 0 5vmin;
+    height: 2.5vh;
+    margin: 0 5vh;
     width: 95%;
 
     .progress-bar-elapsed {
         background: #ffffff;
-        border-radius: 1.2vmin;
+        border-radius: 1.2vh;
         height: 100%;
         max-width: 100%;
     }
