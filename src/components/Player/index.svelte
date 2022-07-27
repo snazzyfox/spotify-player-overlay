@@ -59,7 +59,6 @@ async function updateNowPlaying() {
            */
         if (e.status === 401 && e.response.includes('token expired')) {
             await refreshToken();
-            return;
         }
     }
     
