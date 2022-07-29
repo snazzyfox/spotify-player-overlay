@@ -3,40 +3,36 @@ import { get } from 'svelte/store';
 import { 
     spotifyAuthState, 
     spotifyAuthToken, 
-    spotifyAuthCode, 
-    spotifyAuthVerifier, 
+    spotifyAuthCode,
     spotifyRefreshToken,
     spotifyClientId,
+    spotifyClientSecret,
 } from '../stores';
 const REDIRECT_URI = location.origin + location.pathname + '#spotify'; // strip off hash & querystring etc
 
 export async function initLogin() {
-    if (!get(spotifyClientId)) {
-        throw 'No client ID was provided.'
+    if (!get(spotifyClientId) || !get(spotifyClientSecret)) {
+        throw 'Client ID or Client Secret is missing.'
     }
-    const verifier = cryptoRandomString(72);
-    const codeChallenge = await hashCodeChallenge(verifier);
+    authClear();
     const state = (Math.random() * 1e24).toString(36);
-    spotifyAuthToken.set(null);
-    spotifyAuthCode.set(null);
     spotifyAuthState.set(state);
-    spotifyAuthVerifier.set(verifier);
     const loginUrl = 'https://accounts.spotify.com/authorize?' + new URLSearchParams({
         response_type: 'code',
         client_id: get(spotifyClientId),
         scope: 'user-read-playback-position user-read-playback-state user-read-currently-playing',
         redirect_uri: REDIRECT_URI,
         state: state,
-        code_challenge_method: 'S256',
-        code_challenge: codeChallenge,
-        show_dialog: 'false',
     }).toString();
     window.open(loginUrl, '_blank', 'popup,innerWidth=600,innerHeight=800');
 }
 
 async function getToken(params: {[key: string]: string}) {
     const formData = new URLSearchParams(params)
-    const response = await axios.post('https://accounts.spotify.com/api/token', formData);
+
+    const response = await axios.post('https://accounts.spotify.com/api/token', formData, {
+        headers: {Authorization: 'Basic ' + btoa(get(spotifyClientId) + ':' + get(spotifyClientSecret))}
+    });
     spotifyAuthToken.set(response.data.access_token);
     if (response.data.refresh_token) {
         spotifyRefreshToken.set(response.data.refresh_token);
@@ -50,7 +46,6 @@ export async function refreshToken() {
             await getToken({
                 grant_type: 'refresh_token',
                 refresh_token: get(spotifyRefreshToken),
-                client_id: get(spotifyClientId),
             })
         } catch (e) {
             // something's wrong with the refresh token, try auth code instead
@@ -65,15 +60,13 @@ export async function requestToken() {
         grant_type: 'authorization_code',
         code: get(spotifyAuthCode),
         redirect_uri: REDIRECT_URI,
-        client_id: get(spotifyClientId),
-        code_verifier: get(spotifyAuthVerifier),
     })
     /* There's no try-catch here - if this fails in the on-stream player, we can't just prompt another login */
 }
 
 export async function authCallback() {
     const qs = new URLSearchParams(location.search);
-    history.replaceState(null, '', location.pathname); // wipe off auth code from url
+    // history.replaceState(null, '', location.pathname); // wipe off auth code from url
     if (qs.get('state') && qs.get('state') === get(spotifyAuthState)) {
         // always remove state from storage - it's single use
         spotifyAuthState.set(null);
@@ -95,7 +88,6 @@ export async function authCallback() {
 export function authClear() {
     spotifyAuthCode.set(null);
     spotifyAuthToken.set(null);
-    spotifyAuthVerifier.set(null);
     spotifyRefreshToken.set(null);
 }
 

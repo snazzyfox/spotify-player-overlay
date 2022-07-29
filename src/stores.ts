@@ -35,10 +35,10 @@ function storedWritable<T>(key: string) {
 }
 
 export const spotifyClientId = storedWritable<string>('SPOTIFY_CLIENT_ID');
+export const spotifyClientSecret = storedWritable<string>('SPOTIFY_CLIENT_SECRET');
 export const spotifyAuthToken = storedWritable<string>('SPOTIFY_TOKEN');
 export const spotifyAuthState = storedWritable<string>('SPOTIFY_AUTH_STATE');
 export const spotifyAuthCode = storedWritable<string>('SPOTIFY_AUTH_CODE');
-export const spotifyAuthVerifier = storedWritable<string>('SPOTIFY_CODE_VERIFIER');
 export const spotifyRefreshToken = storedWritable<string>('SPOTIFY_REFRESH_TOKEN');
 export const twitchAuthToken = storedWritable<string>('TWITCH_AUTH_TOKEN');
 export const twitchAuthState = storedWritable<string>('TWITCH_AUTH_STATE');
