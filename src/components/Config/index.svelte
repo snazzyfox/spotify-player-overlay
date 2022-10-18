@@ -1,5 +1,10 @@
 <main class="config-container">
     <h1>Spotify Player Overlay</h1>
+    
+    <div style="font-size: 24px">
+        This tool is no longer maintained. It's been added, with new features, 
+        to <a href="https://snazzyfox.github.io/twitch-tools/">Snazzy's Twitch Toolkit</a>.
+    </div>
 
     {#if navigator.userAgent.match(/\bOBS\b/)}
     <div class="mbe16">
