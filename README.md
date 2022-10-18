@@ -1,3 +1,5 @@
+# This tool is no longer maintained. Its functionality has been integrated into [Snazzy's Twitch Toolkit](https://github.com/snazzyfox/twitch-tools)
+
 # Spotify Player Overlay
 
 A simple, client side only "now playing" card that you can use to display what you're playing in Spotify in OBS. The overlay automatically disappears when your music is paused or stopped.
